@@ -45,6 +45,16 @@ def get_arguments():
         help="Download tracks from a .spotdlTrackingFile (WARNING: this file will be modified!)"
     )
 
+    devgroup = parser.add_argument_group('debug')
+
+    devgroup.add_argument(
+        "--debug",
+        # action="store_true",
+        nargs='?',
+        const='local',  # Scope: local/global/file(global)
+        help=argparse.SUPPRESS,
+    )
+
 
     authgroup = parser.add_argument_group('authentication')
 

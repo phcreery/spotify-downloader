@@ -36,6 +36,43 @@ from rich.console import (
 from rich.highlighter import Highlighter
 from rich.text import Text
 
+import logging
+from rich.logging import RichHandler
+
+#=====================
+#=== Setup Logger ===
+#=====================
+
+# All of this code and library loggings will output to rich's log handler.
+# https://rich.readthedocs.io/en/latest/logging.html
+
+def setup_log(level=logging.ERROR, filename=None, fileonly: bool =False):
+    global log
+
+    # Remove all handlers associated with the root logger object.
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
+
+    # Reconfigure root logging config
+    FORMAT = "%(message)s"
+    if filename:
+        if fileonly:
+            logging.basicConfig(
+                level=level, format=FORMAT, datefmt="[%X]", handlers=[logging.FileHandler(filename="debug.log",)] # level=logging.ERROR, 
+            )
+        else:
+            logging.basicConfig(
+                level=level, format=FORMAT, datefmt="[%X]", handlers=[RichHandler(), logging.FileHandler(filename="debug.log",)] # level=logging.ERROR, 
+            )
+    else:
+        logging.basicConfig(
+            level=level, format=FORMAT, datefmt="[%X]", handlers=[RichHandler()] # level=logging.ERROR, 
+        )
+
+    log = logging.getLogger("rich")
+    # log.setLevel(level=logging.NOTSET)
+    log.info('Hello, World!')
+
 
 
 #=============
@@ -153,6 +190,28 @@ class DisplayManager():
             self._richProgressBar.console.print(line)
             # self._richProgressBar.console.log("Working on job:", text)
 
+    def set_log_level(self, scope='local', level=logging.DEBUG) -> None:
+        '''
+        `level` : logging level to set
+        This is set to change the global logging level. If any files, modules, or libraries use the logging package, it will be outputted. here.
+        '''
+        log.debug('Debug mode turning on...')
+        if scope == 'global':
+            setup_log(level=level, filename='debug.log')  # All logging logs
+        elif scope == 'file':
+            setup_log(level=level, filename='debug.log', fileonly=True)
+        else:
+            log.setLevel(level=logging.DEBUG)
+
+            
+        # if logging.getLogger().isEnabledFor(logging.INFO):  # If log level is INFO or higher
+        log.debug('Log level is set')
+        log.debug('Debug')
+        log.info('Info')
+        log.warning('Warning')
+        log.error('Error')
+        log.critical('Critical')
+
     def get_self(self):
         '''Returns self'''
         return self
@@ -199,6 +258,7 @@ class DisplayManager():
             newMessageList.append(latestMessage)
 
         # self.print('new list: ', newMessageList)
+        log.info('new list: ' + str(newMessageList) )
 
         return newMessageList
 
@@ -315,12 +375,12 @@ class DisplayManager():
             for result in results:
                 if result != None:
                     self.print(result)
-                    # log.ERROR(result)
+                    log.ERROR(result)
         else:
             result = results
             if result != None:
                 self.print(result)
-                # log.ERROR(result)
+                log.ERROR(result)
 
         return results
 

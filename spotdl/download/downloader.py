@@ -22,6 +22,7 @@ from spotdl.download.progressHandlers import DownloadTracker
 from spotdl.cli.displayManager import DisplayManager
 
 import hashlib
+import logging
 
 #==========================
 #=== Base functionality ===
@@ -240,6 +241,7 @@ def download_song(songObj: SongObj, displayManager: DisplayManager = None,
     except Exception as e:
         # print 'got exception: %r:, terminating the pool' % (e,)
         tb = traceback.format_exc()
+        logging.error('Uncaught exception in worker process:' +  str(os.getpid()) + "\n" + str(e) + "\n" + tb)
         if displayManager:
             displayManager.notify_error(os.getpid(), e, tb)
         else:
