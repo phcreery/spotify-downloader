@@ -1,0 +1,2 @@
+songObj: get_display_name
+songObj: get_lyrics

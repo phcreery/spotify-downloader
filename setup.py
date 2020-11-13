@@ -13,18 +13,17 @@ setup(
         'spotdl.patches'
     ],
 
-    #! PyPi doesn't allow repeat names, so it essentially considered a patch
-    version = '3.1.4',
+    version = '3.2.0-pre',
 
     install_requires = [
-        'fuzzywuzzy',
         'spotipy',
         'a-pytube-fork-for-spotdl-users',
-        'tqdm',
         'rapidfuzz',
         'requests',
         'mutagen',
         'python-Levenshtein-wheels',
+        'rich',
+        'multiprocess'
     ],
 
     description="Downloads Spotify music from Youtube with metadata and album art",

@@ -7,7 +7,7 @@
 ⚠ We are dropping active development of spotDL v2. No focused efforts will be made to resolve v2
 specific issues.
 
-⚠ We are actively looking for Contributors/Organization Members for all projects under development. 
+⚠ We are actively looking for Contributors/Organization Members for all projects under development.
 If interested, see [#857](https://github.com/spotDL/spotify-downloader/issues/857)
 
 ⚠ There are a few feature requests we'd like the community to vote on. Do voice your support for features you'd like.
@@ -44,12 +44,20 @@ you use spotDL v3 and open issues for problems that you come across.
     $pip install spotdl
     ```
 
+<<<<<<< HEAD
 2. For latest version (not necessarily stable)
 
     ```
     $pip install https://github.com/spotDL/spotify-downloader/archive/next-rel-dev.zip
     ```
         
+=======
+2. For v3, (latest version)
+    ```
+    $pip install https://github.com/spotDL/spotify-downloader/archive/master.zip
+    ```
+
+>>>>>>> c22ae3682207ce4fc453fc12c01b0cd4695becd9
 3. Voila !
 
 
@@ -60,22 +68,31 @@ To download a song run,
     spotdl https://open.spotify.com/track/08mG3Y1vljYA6bvDt4Wqkj?si=SxezdxmlTx-CaVoucHmrUA
 
 To download an album run,
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> c22ae3682207ce4fc453fc12c01b0cd4695becd9
     # spotdl $albumUrl
     spotdl https://open.spotify.com/album/2YMWspDGtbDgYULXvVQFM6?si=gF5dOQm8QUSo-NdZVsFjAQ
 
 To download a playlist run,
-    
+
     # spotdl $playlistUrl
     spotdl https://open.spotify.com/playlist/37i9dQZF1DWXhcuQw7KIeM?si=xubKHEBESM27RqGkqoXzgQ
 
+To download an artist's songs run,
+
+    # spotdl $artistUrl
+    spotdl https://open.spotify.com/artist/6fOMl44jA4Sp5b9PpYCkzz
+
 To search for and download a song (not very accurate) run,
-    
+
     # spotdl $songQuery
     spotdl 'The HU - Sugaan Essenna'
 
 To resume a failed/incomplete download run,
-    
+
 -   ```
     # spotdl $pathToTrackingFile
     spotdl 'Sugaan Essenna.spotdlTrackingFile'
@@ -84,8 +101,13 @@ To resume a failed/incomplete download run,
 -   Note, '.spotDlTrackingFiles' are automatically created during download start, they are deleted on
     download completion
 
+<<<<<<< HEAD
 You can chain up download tasks by separating them with spaces:
     
+=======
+You can chain up download tasks by seperating them with spaces:
+
+>>>>>>> c22ae3682207ce4fc453fc12c01b0cd4695becd9
     # spotdl $songQuery1 $albumUrl $songQuery2 ... (order does not matter)
     spotdl 'The Hu - Sugaan Essenna' https://open.spotify.com/playlist/37i9dQZF1DWXhcuQw7KIeM?si=xubKHEBESM27RqGkqoXzgQ ...
 

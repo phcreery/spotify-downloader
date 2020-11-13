@@ -10,6 +10,7 @@ import traceback
 from pytube import YouTube
 
 from mutagen.easyid3 import EasyID3, ID3
+from mutagen.id3 import USLT
 from mutagen.id3 import APIC as AlbumCover
 
 from urllib.request import urlopen
@@ -62,29 +63,7 @@ def download_song(songObj: SongObj, displayManager: DisplayManager = None,
         if not exists(tempFolder):
             mkdir(tempFolder)
         
-        # build file name of converted file
-        artistStr = ''
-
-        #! we eliminate contributing artist names that are also in the song name, else we
-        #! would end up with things like 'Jetta, Mastubs - I'd love to change the world
-        #! (Mastubs REMIX).mp3' which is kinda an odd file name.
-        for artist in songObj.get_contributing_artists():
-            if artist.lower() not in songObj.get_song_name().lower():
-                artistStr += artist + ', '
-        
-        #! the ...[:-2] is to avoid the last ', ' appended to artistStr
-        convertedFileName = artistStr[:-2] + ' - ' + songObj.get_song_name()
-
-        #! this is windows specific (disallowed chars)
-        for disallowedChar in ['/', '?', '\\', '*','|', '<', '>']:
-            if disallowedChar in convertedFileName:
-                convertedFileName = convertedFileName.replace(disallowedChar, '')
-        
-        #! double quotes (") and semi-colons (:) are also disallowed characters but we would
-        #! like to retain their equivalents, so they aren't removed in the prior loop
-        convertedFileName = convertedFileName.replace('"', "'").replace(': ', ' - ')
-
-        convertedFilePath = join('.', convertedFileName) + '.mp3'
+        convertedFilePath = join('.', songObj.get_display_name()) + '.mp3'
 
 
         # if a song is already downloaded skip it
@@ -115,7 +94,7 @@ def download_song(songObj: SongObj, displayManager: DisplayManager = None,
             #! pyTube will save the song in .\Temp\$songName.mp4, it doesn't save as '.mp3'
             downloadedFilePath = trackAudioStream.download(
                 output_path   = tempFolder,
-                filename      = convertedFileName,
+                filename      = songObj.get_display_name(),
                 skip_existing = False
             )
         except:
@@ -123,7 +102,7 @@ def download_song(songObj: SongObj, displayManager: DisplayManager = None,
             #! downloadTrackers download queue and all is well...
             #!
             #! None is again used as a convenient exit
-            remove(join(tempFolder, convertedFileName) + '.mp4')
+            remove(join(tempFolder, songObj.get_display_name()) + '.mp4')
             return None
         
         if displayManager:
@@ -151,7 +130,7 @@ def download_song(songObj: SongObj, displayManager: DisplayManager = None,
         #! sampled length of songs matches the actual length (i.e. a 5 min song won't display
         #! as 47 seconds long in your music player, yeah that was an issue earlier.)
 
-        command = 'ffmpeg -v quiet -y -i "%s" -acodec libmp3lame -abr true -af "apad=pad_dur=2, dynaudnorm, loudnorm=I=-17" "%s"'
+        command = 'ffmpeg -v quiet -y -i "%s" -acodec libmp3lame -abr true -af loudnorm=I=-17 "%s"'
         formattedCommand = command % (downloadedFilePath, convertedFilePath)
 
         run_in_shell(formattedCommand)

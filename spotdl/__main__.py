@@ -1,18 +1,24 @@
 #! Basic necessities to get the CLI running
 from spotdl.search.spotifyClient import initialize
 
+<<<<<<< HEAD
 from spotdl.cli.displayManager import DisplayManager
 from spotdl.download.downloadManager import DownloadManager
 
 from spotdl.cli.argumentHandler import get_options
 
 from spotdl.search.utils import get_playlist_tracks, get_album_tracks, search_for_song
+=======
+#! Song Search from different start points
+from spotdl.search.utils import get_playlist_tracks, get_album_tracks, search_for_song, get_artist_tracks
+>>>>>>> c22ae3682207ce4fc453fc12c01b0cd4695becd9
 from spotdl.search.songObj import SongObj
 
 
 #! to avoid packaging errors
 from multiprocessing import freeze_support
 
+<<<<<<< HEAD
 
 
 
@@ -41,6 +47,11 @@ from multiprocessing import freeze_support
 #!                                                          - cheerio! (Michael)
 #!
 #! P.S. Tell me what you think. Up to your expectations?
+=======
+#! used to quiet the output
+from io import StringIO as quiet
+import sys
+>>>>>>> c22ae3682207ce4fc453fc12c01b0cd4695becd9
 
 #! Script Help
 help_notice = '''
@@ -55,6 +66,10 @@ To download a album run,
 To download a playlist run,
     spotdl $playlistUrl
     eg. spotdl https://open.spotify.com/playlist/37i9dQZF1DWXhcuQw7KIeM?si=xubKHEBESM27RqGkqoXzgQ
+
+To download an artist's songs run,
+    spotdl $artistUrl
+    eg. spotdl https://open.spotify.com/artist/6fOMl44jA4Sp5b9PpYCkzz
 
 To search for and download a song (not very accurate) run,
     spotdl $songQuery
@@ -87,8 +102,29 @@ def console_entry_point():
             disp.listen_to_queue(downloader.messageQueue)
             downloader.set_callback_to(disp.process_monitor)
 
+<<<<<<< HEAD
 
             options = get_options()
+=======
+    if '--quiet' in cliArgs:
+        #! removing --quiet so it doesnt mess up with the download
+        cliArgs.remove('--quiet')
+        #! make stdout & stderr silent
+        sys.stdout = quiet()
+        sys.stderr = quiet()
+
+    initialize(
+        clientId     = '4fe3fecfe5334023a1472516cc99d805',
+        clientSecret = '0f02b7c483c04257984695007a4a8d5c'
+        )
+
+    downloader = DownloadManager()
+
+    for request in cliArgs[1:]:
+        if ('open.spotify.com' in request and 'track' in request) or 'spotify:track:' in request:
+            print('Fetching Song...')
+            song = SongObj.from_url(request)
+>>>>>>> c22ae3682207ce4fc453fc12c01b0cd4695becd9
 
             if options.quiet:
                 disp.quiet = True
@@ -105,6 +141,7 @@ def console_entry_point():
                 else: 
                     disp.print('Spotify Secret has to be supplied with ID')
             else:
+<<<<<<< HEAD
                 initialize(
                     clientId='4fe3fecfe5334023a1472516cc99d805',
                     clientSecret='0f02b7c483c04257984695007a4a8d5c'
@@ -178,11 +215,61 @@ def console_entry_point():
                         except Exception:
                             disp.print('No song named "%s" could be found on spotify' % request)
 
+=======
+                print('Skipping %s (%s) as no match could be found on youtube' % (
+                    song.get_song_name(), request
+                ))
+
+        elif ('open.spotify.com' in request and 'album' in request) or 'spotify:album:' in request:
+            print('Fetching Album...')
+            songObjList = get_album_tracks(request)
+
+            downloader.download_multiple_songs(songObjList)
+
+        elif ('open.spotify.com' in request and 'playlist' in request) or 'spotify:playlist:' in request:
+            print('Fetching Playlist...')
+            songObjList = get_playlist_tracks(request)
+
+            downloader.download_multiple_songs(songObjList)
+
+        elif ('open.spotify.com' in request and 'artist' in request) or 'spotify:artist:' in request:
+            print('Fetching Artist\'s Tracks...')
+            songObjList = get_artist_tracks(request)
+
+            downloader.download_multiple_songs(songObjList)
+
+        elif request.endswith('.txt'):
+            print('Fetching songs from %s...' % request)
+            songObjList = []
+
+            with open(request, 'r') as songFile:
+                for songLink in songFile.readlines():
+                    song = SongObj.from_url(songLink)
+                    songObjList.append(song)
+
+            downloader.download_multiple_songs(songObjList)
+
+        elif request.endswith('.spotdlTrackingFile'):
+            print('Preparing to resume download...')
+            downloader.resume_download_from_tracking_file(request)
+
+        else:
+            print('Searching for song "%s"...' % request)
+            try:
+                song = search_for_song(request)
+                downloader.download_single_song(song)
+
+            except Exception:
+                print('No song named "%s" could be found on spotify' % request)
+
+    downloader.close()
+>>>>>>> c22ae3682207ce4fc453fc12c01b0cd4695becd9
 
 if __name__ == '__main__':
     freeze_support()
 
     console_entry_point()
+<<<<<<< HEAD
 
 
 
@@ -191,3 +278,5 @@ if __name__ == '__main__':
    
                 
 
+=======
+>>>>>>> c22ae3682207ce4fc453fc12c01b0cd4695becd9
