@@ -3,7 +3,6 @@
 # ===============
 
 from datetime import timedelta
-from time import strptime
 # ! Just for static typing
 from typing import List
 
@@ -73,16 +72,16 @@ ytmApiClient = YTMusic()
 
 
 def __parse_duration(duration: str) -> float:
-    if len(duration) > 5:
-        padded = duration.rjust(8, '0')
-        x = strptime(padded, '%H:%M:%S')
-    elif len(duration) > 2:
-        padded = duration.rjust(5, '0')
-        x = strptime(padded, '%M:%S')
-    else:
-        x = strptime(duration, '%S')
+    try:
+        # ! {(3600, "h"), (60, "m"), (1, "s")}
+        mapped = zip([3600, 60, 1], duration.split(":"))
+        seconds = 0
+        for x, t in mapped:
+            seconds += x * int(t)
+        return float(seconds)
 
-    return timedelta(hours=x.tm_hour, minutes=x.tm_min, seconds=x.tm_sec).total_seconds()
+    except (ValueError, TypeError):
+        return 0.0
 
 
 def __map_result_to_song_data(result: dict) -> dict:
@@ -202,7 +201,8 @@ def search_and_order_ytm_results(songName: str, songArtists: List[str],
         artistMatch = (artistMatchNumber / len(songArtists)) * 100
 
         # Find name match
-        nameMatch = round(match_percentage(result['name'], songName), ndigits=3)
+        nameMatch = round(match_percentage(
+            result['name'], songName), ndigits=3)
 
         # Find album match
         # ! We assign an arbitrary value of 0 for album match in case of video results
