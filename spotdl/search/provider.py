@@ -2,7 +2,6 @@
 # === Imports ===
 # ===============
 
-from datetime import timedelta
 # ! Just for static typing
 from typing import List
 
