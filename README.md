@@ -24,6 +24,17 @@ ______________________________________________________________________
 **[Read the documentation on ReadTheDocs!](https://spotdl.readthedocs.io)**
 ______________________________________________________________________
 
+## Fixes and changes 15/02/2026
+- user auth is enabled due to spotify api changes
+- playlists and metadata has been fixed for the new api changes
+- please use `--config` when using the download command
+- if using previous versions please regenerate your config `spotdl --generate-config` and include your spotify app credentials 
+inside the config.
+- setup redirect urls in your spotify app to look like below so api access/login works properly
+  <img width="630" height="332" alt="image" src="https://github.com/user-attachments/assets/9716e292-01f7-4cec-8fc3-800d64b41433" />
+
+
+
 ## Installation
 
 Refer to our [Installation Guide](docs/installation.md) for more details.
